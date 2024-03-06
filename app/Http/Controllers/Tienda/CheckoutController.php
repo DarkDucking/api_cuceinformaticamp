@@ -53,27 +53,27 @@ class CheckoutController extends Controller
 
     public function categoriaMenosConsultada(){
         $result = Categorie::select('categories.name as category', DB::raw('count(courses_students.id) as total_students'))
-            ->leftJoin('courses', 'categories.id', '=', 'courses.categorie_id')
-            ->leftJoin('courses_students', 'courses.id', '=', 'courses_students.course_id')
-            ->groupBy('category')
-            ->orderBy('total_students')
-            ->orderBy('courses_students.id')
-            ->limit(1)
-            ->get();
+        ->leftJoin('courses', 'categories.id', '=', 'courses.categorie_id')
+        ->leftJoin('courses_students', 'courses.id', '=', 'courses_students.course_id')
+        ->groupBy('categories.name')  // Modificado para usar el nombre de la columna en GROUP BY
+        ->orderBy('total_students')
+        ->orderBy('categories.name')   // Agregado para ordenar por nombre de categoría si hay empate en total_students
+        ->limit(1)
+        ->get();
 
-        return response()->json($result);
+    return response()->json($result);
     }
 
     public function categoriaMasConsultada(){
         $result = Categorie::select('categories.name as category', DB::raw('count(courses_students.id) as total_students'))
             ->leftJoin('courses', 'categories.id', '=', 'courses.categorie_id')
             ->leftJoin('courses_students', 'courses.id', '=', 'courses_students.course_id')
-            ->groupBy('category')
+            ->groupBy('categories.name')  // Usar el nombre de la columna en GROUP BY
             ->orderByDesc('total_students')
-            ->orderByDesc('courses_students.id')
+            ->orderByDesc('category')  // Ordenar por el nombre de la categoría si hay empate en total_students
             ->limit(1)
             ->get();
-    
+
         return response()->json($result);
     }
 
